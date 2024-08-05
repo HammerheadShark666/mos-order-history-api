@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{71EBE7EF-463C-4E0A-A8F6-B635087CA9B8}"
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
+		PostmanCollection\MOS_Order_History_Api_V1_postman_collection.json = PostmanCollection\MOS_Order_History_Api_V1_postman_collection.json
 	EndProjectSection
 EndProject
 Global
