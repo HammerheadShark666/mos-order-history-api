@@ -11,7 +11,7 @@
       "name": "Authentication",
       "item": [
         {
-          "name": "{{authentication_url}}/api/{version}login",
+          "name": "{{authentication_url}}/{version}login",
           "event": [
             {
               "listen": "test",
@@ -46,13 +46,12 @@
               }
             },
             "url": {
-              "raw": "https://{{authentication_url}}/api/v1/login",
+              "raw": "https://{{authentication_url}}/v1/login",
               "protocol": "https",
               "host": [
                 "{{authentication_url}}"
               ],
               "path": [
-                "api",
                 "v1",
                 "login"
               ]
@@ -66,7 +65,7 @@
       "name": "Order",
       "item": [
         {
-          "name": "{{order_history_url}}/api/v1/order-history/{{order_id}}",
+          "name": "{{order_history_url}}/v1/order-history/{{order_id}}",
           "event": [
             {
               "listen": "test",
@@ -112,13 +111,12 @@
               }
             ],
             "url": {
-              "raw": "https://{{order_history_url}}/api/v1/order-history/{{order_id}}",
+              "raw": "https://{{order_history_url}}/v1/order-history/{{order_id}}",
               "protocol": "https",
               "host": [
                 "{{order_history_url}}"
               ],
               "path": [
-                "api",
                 "v1",
                 "order-history",
                 "{{order_id}}"

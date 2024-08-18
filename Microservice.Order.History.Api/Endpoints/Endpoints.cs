@@ -15,7 +15,7 @@ public static class Endpoints
 {
     public static void ConfigureRoutes(this WebApplication app, ConfigurationManager configuration)
     {
-        var orderGroup = app.MapGroup("api/v{version:apiVersion}/order-history").WithTags("order-history");
+        var orderGroup = app.MapGroup("v{version:apiVersion}/order-history").WithTags("order-history");
 
         orderGroup.MapGet("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async ([FromRoute] Guid id, [FromServices] IMediator mediator) =>
         {
