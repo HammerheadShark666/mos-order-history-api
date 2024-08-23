@@ -1,5 +1,4 @@
-﻿using Microservice.Order.History.Api.Helpers;
-using Microservice.Order.History.Api.Helpers.Interfaces;
+﻿using Microservice.Order.History.Api.Helpers.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,7 +17,7 @@ public class JwtHelper(IConfiguration configuration) : IJwtHelper
         var expirationTimeUtc = GetExpirationTimeUtc(nowUtc);
 
         var token = new JwtSecurityToken(issuer: EnvironmentVariables.JwtIssuer,
-                                         claims: GetClaims(nowUtc, expirationTimeUtc), 
+                                         claims: GetClaims(nowUtc, expirationTimeUtc),
                                          expires: expirationTimeUtc,
                                          signingCredentials: GetSigningCredentials());
 
@@ -60,12 +59,12 @@ public class JwtHelper(IConfiguration configuration) : IJwtHelper
     {
         return new List<Claim>
                     {
-                        new Claim(JwtRegisteredClaimNames.Sub, "Authentication"),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Iat, EpochTime.GetIntDate(nowUtc).ToString(), ClaimValueTypes.Integer64),
-                        new Claim(JwtRegisteredClaimNames.Exp, EpochTime.GetIntDate(expirationUtc).ToString(), ClaimValueTypes.Integer64),
-                        new Claim(JwtRegisteredClaimNames.Iss, EnvironmentVariables.JwtIssuer),
-                        new Claim(JwtRegisteredClaimNames.Aud, EnvironmentVariables.JwtAudience) 
+                        new(JwtRegisteredClaimNames.Sub, "Authentication"),
+                        new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new(JwtRegisteredClaimNames.Iat, EpochTime.GetIntDate(nowUtc).ToString(), ClaimValueTypes.Integer64),
+                        new(JwtRegisteredClaimNames.Exp, EpochTime.GetIntDate(expirationUtc).ToString(), ClaimValueTypes.Integer64),
+                        new(JwtRegisteredClaimNames.Iss, EnvironmentVariables.JwtIssuer),
+                        new(JwtRegisteredClaimNames.Aud, EnvironmentVariables.JwtAudience)
                     };
     }
 }

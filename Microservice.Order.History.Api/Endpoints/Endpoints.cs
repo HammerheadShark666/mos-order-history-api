@@ -26,12 +26,12 @@ public static class Endpoints
         .Produces<BadRequestException>((int)HttpStatusCode.BadRequest)
         .WithName("GetOrder")
         .WithApiVersionSet(app.GetApiVersionSet())
-        .MapToApiVersion(new ApiVersion(1, 0)) 
+        .MapToApiVersion(new ApiVersion(1, 0))
         .WithOpenApi(x => new OpenApiOperation(x)
         {
             Summary = "Get a order history based on id.",
             Description = "Gets a order history based on its id.",
             Tags = new List<OpenApiTag> { new() { Name = "Microservice Order System - Orders History" } }
-        }); 
+        });
     }
 }

@@ -7,13 +7,13 @@ namespace Microservice.Order.History.Api.Data.Repository;
 public class OrderHistoryRepository(IDbContextFactory<OrderHistoryDbContext> dbContextFactory) : IOrderHistoryRepository
 {
     public IDbContextFactory<OrderHistoryDbContext> _dbContextFactory { get; set; } = dbContextFactory;
- 
+
     public async Task Delete(Domain.OrderHistory orderHistory)
-    { 
-        using var db = _dbContextFactory.CreateDbContext(); 
-         
+    {
+        using var db = _dbContextFactory.CreateDbContext();
+
         db.OrdersHistory.Remove(orderHistory);
-        await db.SaveChangesAsync(); 
+        await db.SaveChangesAsync();
     }
 
     public async Task<Domain.OrderHistory> GetByIdAsync(Guid id, Guid customerId)
@@ -21,7 +21,7 @@ public class OrderHistoryRepository(IDbContextFactory<OrderHistoryDbContext> dbC
         await using var db = await _dbContextFactory.CreateDbContextAsync();
         return await db.OrdersHistory
                         .Where(o => o.Id.Equals(id) && o.CustomerId.Equals(customerId))
-                        .Include(e => e.OrderItems) 
+                        .Include(e => e.OrderItems)
                         .SingleOrDefaultAsync();
     }
 
@@ -33,5 +33,5 @@ public class OrderHistoryRepository(IDbContextFactory<OrderHistoryDbContext> dbC
                         .Include(e => e.OrderItems)
                         .OrderBy(e => e.Created)
                         .ToListAsync();
-    }      
+    }
 }

@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using MediatR;
 using Microservice.Order.History.Api.Data.Contexts;
 using Microservice.Order.History.Api.Data.Repository;
 using Microservice.Order.History.Api.Data.Repository.Interfaces;
@@ -24,12 +23,12 @@ public static class IServiceCollectionExtensions
     }
 
     public static void ConfigureJwt(this IServiceCollection services)
-    { 
+    {
         services.AddJwtAuthentication();
     }
 
     public static void ConfigureDI(this IServiceCollection services)
-    { 
+    {
         services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
         services.AddScoped<IJwtHelper, JwtHelper>();
         services.AddMemoryCache();
@@ -48,7 +47,7 @@ public static class IServiceCollectionExtensions
         services.AddDbContextFactory<OrderHistoryDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString(Constants.DatabaseConnectionString),
             options => options.EnableRetryOnFailure()));
-    } 
+    }
 
     public static void ConfigureApiVersioning(this IServiceCollection services)
     {
