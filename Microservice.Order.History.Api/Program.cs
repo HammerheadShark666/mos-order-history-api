@@ -1,6 +1,5 @@
 using Microservice.Order.History.Api.Endpoints;
 using Microservice.Order.History.Api.Extensions;
-using Microservice.Order.History.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +18,7 @@ builder.Services.ConfigureDatabaseContext(builder.Configuration);
 builder.Services.ConfigureAutoMapper();
 builder.Services.ConfigureJwt();
 builder.Services.ConfigureSwagger();
-builder.Services.ConfigureApiVersioning(); 
+builder.Services.ConfigureApiVersioning();
 
 var app = builder.Build();
 
@@ -28,7 +27,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseMiddleware<ExceptionHandlingMiddleware>(); 
+app.ConfigureMiddleware();
 
 Endpoints.ConfigureRoutes(app, builder.Configuration);
 

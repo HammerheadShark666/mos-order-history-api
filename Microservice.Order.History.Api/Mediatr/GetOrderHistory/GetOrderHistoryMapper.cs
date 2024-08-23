@@ -4,13 +4,13 @@ using Microservice.Order.History.Api.Mediatr.GetOrderHistory.Model;
 namespace Microservice.Order.History.Api.MediatR.GetOrderHistory;
 
 public class GetOrderHistoryMapper : Profile
-{ 
+{
     public GetOrderHistoryMapper()
     {
         base.CreateMap<Api.Domain.OrderHistory, OrderHistory>()
-            .ForMember(m => m.Address, o => o.MapFrom(s => s)); 
+            .ForMember(m => m.Address, o => o.MapFrom(s => s));
 
-        base.CreateMap<Api.Domain.OrderItem, OrderItemHistory>(); 
+        base.CreateMap<Api.Domain.OrderItem, OrderItemHistory>();
 
         base.CreateMap<Api.Domain.OrderHistory, OrderHistoryAddress>()
             .ForMember(m => m.AddressLine1, o => o.MapFrom(s => s.AddressLine1))
