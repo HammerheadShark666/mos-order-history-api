@@ -21,12 +21,12 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
         }
         catch (Exception e)
         {
-            _logger.LogError(e, e.Message);
+            _logger.LogError(e, "{message}", e.Message);
             await HandleExceptionAsync(context, e);
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var httpStatusCode = HttpStatusCode.InternalServerError;
 
