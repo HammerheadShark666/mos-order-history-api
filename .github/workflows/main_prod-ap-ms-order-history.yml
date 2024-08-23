@@ -27,7 +27,7 @@ jobs:
         password: ${{ secrets.AzureAppService_ContainerPassword_e1e777df511f488c8c39ae7fbec90446 }}
 
     - name: Build and push container image to registry
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v4
       with:
         push: true
         tags: prodcrmsordersystem.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_870b77c3468c4773b96a096ce9c4de10 }}/microserviceorderhistory:${{ github.sha }}
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '8.x'
           include-prerelease: true
