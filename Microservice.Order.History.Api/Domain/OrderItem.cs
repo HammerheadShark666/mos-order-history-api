@@ -14,9 +14,9 @@ public class OrderItem
     public Guid ProductId { get; set; }
 
     [MaxLength(150)]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public string ProductType { get; set; }
+    public string ProductType { get; set; } = string.Empty;
 
     [Required]
     [Range(1, 999, ErrorMessage = "{0} must be between {1:c} and {2:c}")]

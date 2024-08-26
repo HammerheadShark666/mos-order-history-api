@@ -1,5 +1,5 @@
 ﻿using Asp.Versioning;
-using Microservice.Order.History.Api.Data.Contexts;
+using Microservice.Order.History.Api.Data.Context;
 using Microservice.Order.History.Api.Data.Repository;
 using Microservice.Order.History.Api.Data.Repository.Interfaces;
 using Microservice.Order.History.Api.Helpers;

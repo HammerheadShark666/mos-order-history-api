@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Microservice.Order.History.Api.Data.Contexts;
+namespace Microservice.Order.History.Api.Data.Context;
 
-public class OrderHistoryDbContext : DbContext
+public class OrderHistoryDbContext(DbContextOptions<OrderHistoryDbContext> options) : DbContext(options)
 {
-    public OrderHistoryDbContext(DbContextOptions<OrderHistoryDbContext> options) : base(options) { }
-
     public DbSet<Domain.OrderHistory> OrdersHistory { get; set; }
     public DbSet<Domain.OrderItem> OrderItems { get; set; }
 
