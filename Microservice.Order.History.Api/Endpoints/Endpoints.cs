@@ -13,7 +13,7 @@ namespace Microservice.Order.History.Api.Endpoints;
 
 public static class Endpoints
 {
-    public static void ConfigureRoutes(this WebApplication app, ConfigurationManager configuration)
+    public static void ConfigureRoutes(this WebApplication app)
     {
         var orderGroup = app.MapGroup("v{version:apiVersion}/order-history").WithTags("order-history");
 
@@ -31,7 +31,7 @@ public static class Endpoints
         {
             Summary = "Get a order history based on id.",
             Description = "Gets a order history based on its id.",
-            Tags = new List<OpenApiTag> { new() { Name = "Microservice Order System - Orders History" } }
+            Tags = [new() { Name = "Microservice Order System - Orders History" }]
         });
     }
 }
