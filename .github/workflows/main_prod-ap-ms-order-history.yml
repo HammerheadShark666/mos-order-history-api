@@ -33,26 +33,9 @@ jobs:
         tags: prodcrmsordersystem.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_870b77c3468c4773b96a096ce9c4de10 }}/microserviceorderhistory:${{ github.sha }}
         file: ./Microservice.Order.History.Api/Dockerfile
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: 'prod-ap-ms-order-history'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_6e5d27d12c3f42deb224b0ce66a4c85f }}
-        images: 'prodcrmsordersystem.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_870b77c3468c4773b96a096ce9c4de10 }}/microserviceorderhistory:${{ github.sha }}'
-
   unit-tests:
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: build
     steps:
       - uses: actions/checkout@v4
 
@@ -66,10 +49,27 @@ jobs:
 
       - name: Unit Tests
         run: dotnet test Microservice.Order.History.Api.Test.Unit/Microservice.Order.History.Api.Test.Unit.csproj --logger "console;verbosity=detailed"
-
-  automated-api-tests:
+ 
+  deploy:
     runs-on: ubuntu-latest
     needs: unit-tests
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: 'prod-ap-ms-order-history'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_6e5d27d12c3f42deb224b0ce66a4c85f }}
+        images: 'prodcrmsordersystem.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_870b77c3468c4773b96a096ce9c4de10 }}/microserviceorderhistory:${{ github.sha }}'
+ 
+  automated-api-tests:
+    runs-on: ubuntu-latest
+    needs: deploy
     steps:
       - uses: actions/checkout@v4
       - name: Install Postman CLI
@@ -80,4 +80,3 @@ jobs:
       - name: Run API tests
         run: |
           postman collection run "${{ github.workspace }}/PostmanCollection/MOS_Order_History_Api_V1_postman_collection.json" -e "${{ secrets.POSTMAN_ENVIRONMENT_ID }}" --integration-id "165236-${{ github.run_id }}"
-        
