@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Microservice.Order.History.Api.Migrations
 {
     [DbContext(typeof(OrderHistoryDbContext))]
-    [Migration("20240830135121_default-data")]
+    [Migration("20240830142102_default-data")]
     partial class defaultdata
     {
         /// <inheritdoc />
@@ -106,13 +106,13 @@ namespace Microservice.Order.History.Api.Migrations
                             AddressSurname = "Test_Surname",
                             Country = "England",
                             County = "West Yorkshire",
-                            Created = new DateTime(2024, 8, 30, 14, 51, 19, 106, DateTimeKind.Local).AddTicks(2055),
+                            Created = new DateTime(2024, 8, 30, 15, 21, 2, 212, DateTimeKind.Local).AddTicks(1031),
                             CustomerId = new Guid("6c84d0a3-0c0c-435f-9ae0-4de09247ee15"),
-                            OrderNumber = "000000006",
-                            OrderPlaced = new DateOnly(1, 1, 1),
+                            OrderNumber = "000000001",
+                            OrderPlaced = new DateOnly(2024, 8, 30),
                             OrderStatus = "Completed",
                             Postcode = "HD6 TRF4",
-                            Total = 8.99m,
+                            Total = 19.98m,
                             TownCity = "Leeds"
                         });
                 });
@@ -152,7 +152,16 @@ namespace Microservice.Order.History.Api.Migrations
                             Name = "Infinity Kings",
                             ProductType = "Book",
                             Quantity = 1,
-                            UnitPrice = 8.99m
+                            UnitPrice = 9.99m
+                        },
+                        new
+                        {
+                            OrderId = new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"),
+                            ProductId = new Guid("37544155-da95-49e8-b7fe-3c937eb1de98"),
+                            Name = "Wild Love",
+                            ProductType = "Book",
+                            Quantity = 1,
+                            UnitPrice = 9.99m
                         });
                 });
 
