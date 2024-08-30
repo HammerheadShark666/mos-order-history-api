@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Microservice.Order.History.Api.Migrations
 {
     /// <inheritdoc />
@@ -62,12 +64,16 @@ namespace Microservice.Order.History.Api.Migrations
             migrationBuilder.InsertData(
                 table: "MSOS_OrderHistory",
                 columns: new[] { "Id", "AddressForename", "AddressLine1", "AddressLine2", "AddressLine3", "AddressSurname", "Country", "County", "Created", "CustomerId", "OrderNumber", "OrderPlaced", "OrderStatus", "Postcode", "Total", "TownCity" },
-                values: new object[] { new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), "Test_Forename", "AddressLine1", "AddressLine2", "AddressLine3", "Test_Surname", "England", "West Yorkshire", new DateTime(2024, 8, 30, 14, 51, 19, 106, DateTimeKind.Local).AddTicks(2055), new Guid("6c84d0a3-0c0c-435f-9ae0-4de09247ee15"), "000000006", new DateOnly(1, 1, 1), "Completed", "HD6 TRF4", 8.99m, "Leeds" });
+                values: new object[] { new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), "Test_Forename", "AddressLine1", "AddressLine2", "AddressLine3", "Test_Surname", "England", "West Yorkshire", new DateTime(2024, 8, 30, 15, 21, 2, 212, DateTimeKind.Local).AddTicks(1031), new Guid("6c84d0a3-0c0c-435f-9ae0-4de09247ee15"), "000000001", new DateOnly(2024, 8, 30), "Completed", "HD6 TRF4", 19.98m, "Leeds" });
 
             migrationBuilder.InsertData(
                 table: "MSOS_OrderHistory_OrderItem",
                 columns: new[] { "OrderId", "ProductId", "Name", "ProductType", "Quantity", "UnitPrice" },
-                values: new object[] { new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("29a75938-ce2d-473b-b7fe-2903fe97fd6e"), "Infinity Kings", "Book", 1, 8.99m });
+                values: new object[,]
+                {
+                    { new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("29a75938-ce2d-473b-b7fe-2903fe97fd6e"), "Infinity Kings", "Book", 1, 9.99m },
+                    { new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("37544155-da95-49e8-b7fe-3c937eb1de98"), "Wild Love", "Book", 1, 9.99m }
+                });
         }
 
         /// <inheritdoc />

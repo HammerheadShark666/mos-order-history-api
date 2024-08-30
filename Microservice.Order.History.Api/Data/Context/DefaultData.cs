@@ -8,7 +8,7 @@ public class DefaultData
     {
         return
         [
-            CreateOrderHistory(new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("6c84d0a3-0c0c-435f-9ae0-4de09247ee15"), "Test_Surname", "Test_Forename", "AddressLine1", "AddressLine2", "AddressLine3", "Leeds", "West Yorkshire", "England", "HD6 TRF4", "000000006", [], "Completed", 8.99m),
+            CreateOrderHistory(new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("6c84d0a3-0c0c-435f-9ae0-4de09247ee15"), "Test_Surname", "Test_Forename", "AddressLine1", "AddressLine2", "AddressLine3", "Leeds", "West Yorkshire", "England", "HD6 TRF4", "000000001", [], "Completed", 19.98m),
         ];
     }
 
@@ -16,7 +16,8 @@ public class DefaultData
     {
         return
         [
-            CreateOrderItem(new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("29a75938-ce2d-473b-b7fe-2903fe97fd6e"), "Infinity Kings", "Book", 1, 8.99m),
+            CreateOrderItem(new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("29a75938-ce2d-473b-b7fe-2903fe97fd6e"), "Infinity Kings", "Book", 1, 9.99m),
+            CreateOrderItem(new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("37544155-da95-49e8-b7fe-3c937eb1de98"), "Wild Love", "Book", 1, 9.99m),
         ];
     }
 
@@ -39,6 +40,8 @@ public class DefaultData
             OrderNumber = orderNumber,
             OrderItems = orderItems,
             OrderStatus = orderStatus,
+            OrderPlaced = DateOnly.FromDateTime(DateTime.Now),
+            Created = DateTime.Now,
             Total = total
         };
     }
