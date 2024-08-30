@@ -66,12 +66,14 @@ namespace Microservice.Order.History.Api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OrderNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("OrderPlaced")
                         .HasColumnType("date");
 
                     b.Property<string>("OrderStatus")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Postcode")
@@ -89,6 +91,27 @@ namespace Microservice.Order.History.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MSOS_OrderHistory");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"),
+                            AddressForename = "Test_Forename",
+                            AddressLine1 = "AddressLine1",
+                            AddressLine2 = "AddressLine2",
+                            AddressLine3 = "AddressLine3",
+                            AddressSurname = "Test_Surname",
+                            Country = "England",
+                            County = "West Yorkshire",
+                            Created = new DateTime(2024, 8, 30, 14, 51, 19, 106, DateTimeKind.Local).AddTicks(2055),
+                            CustomerId = new Guid("6c84d0a3-0c0c-435f-9ae0-4de09247ee15"),
+                            OrderNumber = "000000006",
+                            OrderPlaced = new DateOnly(1, 1, 1),
+                            OrderStatus = "Completed",
+                            Postcode = "HD6 TRF4",
+                            Total = 8.99m,
+                            TownCity = "Leeds"
+                        });
                 });
 
             modelBuilder.Entity("Microservice.Order.History.Api.Domain.OrderItem", b =>
@@ -100,13 +123,12 @@ namespace Microservice.Order.History.Api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<Guid?>("OrderHistoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("ProductType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
@@ -117,16 +139,29 @@ namespace Microservice.Order.History.Api.Migrations
 
                     b.HasKey("OrderId", "ProductId");
 
-                    b.HasIndex("OrderHistoryId");
-
                     b.ToTable("MSOS_OrderHistory_OrderItem");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"),
+                            ProductId = new Guid("29a75938-ce2d-473b-b7fe-2903fe97fd6e"),
+                            Name = "Infinity Kings",
+                            ProductType = "Book",
+                            Quantity = 1,
+                            UnitPrice = 8.99m
+                        });
                 });
 
             modelBuilder.Entity("Microservice.Order.History.Api.Domain.OrderItem", b =>
                 {
-                    b.HasOne("Microservice.Order.History.Api.Domain.OrderHistory", null)
+                    b.HasOne("Microservice.Order.History.Api.Domain.OrderHistory", "Order")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderHistoryId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Microservice.Order.History.Api.Domain.OrderHistory", b =>

@@ -10,6 +10,8 @@ public class OrderItem
     [ForeignKey("OrderId")]
     public Guid OrderId { get; set; }
 
+    public OrderHistory Order { get; set; } = default!;
+
     [Key]
     public Guid ProductId { get; set; }
 
