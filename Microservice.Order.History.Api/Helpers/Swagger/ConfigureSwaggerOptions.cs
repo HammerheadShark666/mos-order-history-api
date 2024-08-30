@@ -5,11 +5,9 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Microservice.Order.History.Api.Helpers.Swagger;
 
-public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
+public class ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) : IConfigureOptions<SwaggerGenOptions>
 {
-    private readonly IApiVersionDescriptionProvider _provider;
-
-    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => _provider = provider;
+    private readonly IApiVersionDescriptionProvider _provider = provider;
 
     public void Configure(SwaggerGenOptions options)
     {
@@ -23,9 +21,9 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         var info = new OpenApiInfo()
         {
-            Title = "Microservice Order System - Order Api",
+            Title = "Microservice Order System - Order History Api",
             Version = description.ApiVersion.ToString(),
-            Description = "Api for accessing order functionality.",
+            Description = "Api for accessing order history functionality.",
             Contact = new OpenApiContact { Name = "John Miller", Email = "john@test.com" },
             License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
         };

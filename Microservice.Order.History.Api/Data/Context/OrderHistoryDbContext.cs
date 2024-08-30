@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microservice.Order.History.Api.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Microservice.Order.History.Api.Data.Context;
 
@@ -11,12 +12,18 @@ public class OrderHistoryDbContext(DbContextOptions<OrderHistoryDbContext> optio
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Domain.OrderItem>().HasKey(m => new { m.OrderId, m.ProductId });
-        modelBuilder.Entity<Domain.OrderHistory>().HasMany(e => e.OrderItems);
+        modelBuilder.Entity<OrderHistory>()
+        .HasMany(e => e.OrderItems)
+        .WithOne(e => e.Order)
+        .HasForeignKey(e => e.OrderId)
+        .HasPrincipalKey(e => e.Id);
+
+        modelBuilder.Entity<Domain.OrderItem>()
+            .HasKey(m => new { m.OrderId, m.ProductId });
+
+        //modelBuilder.Entity<Domain.OrderHistory>().HasMany(e => e.OrderItems);
+
+        modelBuilder.Entity<Domain.OrderHistory>().HasData(DefaultData.GetOrderHistoryDefaultData());
+        modelBuilder.Entity<Domain.OrderItem>().HasData(DefaultData.GetOrderItemDefaultData());
     }
 }
-
-//add-migration
-//update-database
-
-//azurite --silent --location c:\azurite --debug c:\azurite\debug.log

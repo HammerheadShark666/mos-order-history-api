@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Microservice.Order.History.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class createtablesdefaultdata : Migration
+    public partial class defaultdata : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,9 +19,9 @@ namespace Microservice.Order.History.Api.Migrations
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AddressSurname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     AddressForename = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    OrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrderPlaced = table.Column<DateOnly>(type: "date", nullable: false),
-                    OrderStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(19,2)", nullable: false),
                     AddressLine1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     AddressLine2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -42,26 +43,31 @@ namespace Microservice.Order.History.Api.Migrations
                 {
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    ProductType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    ProductType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "decimal(19,2)", nullable: true),
-                    OrderHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UnitPrice = table.Column<decimal>(type: "decimal(19,2)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MSOS_OrderHistory_OrderItem", x => new { x.OrderId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_MSOS_OrderHistory_OrderItem_MSOS_OrderHistory_OrderHistoryId",
-                        column: x => x.OrderHistoryId,
+                        name: "FK_MSOS_OrderHistory_OrderItem_MSOS_OrderHistory_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "MSOS_OrderHistory",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_MSOS_OrderHistory_OrderItem_OrderHistoryId",
+            migrationBuilder.InsertData(
+                table: "MSOS_OrderHistory",
+                columns: new[] { "Id", "AddressForename", "AddressLine1", "AddressLine2", "AddressLine3", "AddressSurname", "Country", "County", "Created", "CustomerId", "OrderNumber", "OrderPlaced", "OrderStatus", "Postcode", "Total", "TownCity" },
+                values: new object[] { new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), "Test_Forename", "AddressLine1", "AddressLine2", "AddressLine3", "Test_Surname", "England", "West Yorkshire", new DateTime(2024, 8, 30, 14, 51, 19, 106, DateTimeKind.Local).AddTicks(2055), new Guid("6c84d0a3-0c0c-435f-9ae0-4de09247ee15"), "000000006", new DateOnly(1, 1, 1), "Completed", "HD6 TRF4", 8.99m, "Leeds" });
+
+            migrationBuilder.InsertData(
                 table: "MSOS_OrderHistory_OrderItem",
-                column: "OrderHistoryId");
+                columns: new[] { "OrderId", "ProductId", "Name", "ProductType", "Quantity", "UnitPrice" },
+                values: new object[] { new Guid("24331f31-a2cd-4ff4-8db6-c93d124e4483"), new Guid("29a75938-ce2d-473b-b7fe-2903fe97fd6e"), "Infinity Kings", "Book", 1, 8.99m });
         }
 
         /// <inheritdoc />

@@ -1,24 +1,24 @@
 using MediatR;
-using Microservice.Order.Api.MediatR.GetOrderHistory;
 using Microservice.Order.History.Api.Data.Repository.Interfaces;
 using Microservice.Order.History.Api.Domain;
 using Microservice.Order.History.Api.Helpers.Exceptions;
 using Microservice.Order.History.Api.Helpers.Interfaces;
+using Microservice.Order.History.Api.Mediatr.GetOrderHistory;
 using Microservice.Order.History.Api.MediatR.GetOrderHistory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Reflection;
 
-namespace Microservice.Order.History.Api.Test.Unit;
+namespace Microservice.Order.History.Api.Test.Unit.Mediatr;
 
 [TestFixture]
 public class GetOrderHistoryMediatrTests
 {
-    private Mock<IOrderHistoryRepository> orderHistoryRepositoryMock = new();
-    private Mock<ILogger<GetOrderHistoryQueryHandler>> loggerMock = new();
-    private Mock<ICustomerHttpAccessor> customerHttpAccessorMock = new();
-    private ServiceCollection services = new();
+    private readonly Mock<IOrderHistoryRepository> orderHistoryRepositoryMock = new();
+    private readonly Mock<ILogger<GetOrderHistoryQueryHandler>> loggerMock = new();
+    private readonly Mock<ICustomerHttpAccessor> customerHttpAccessorMock = new();
+    private readonly ServiceCollection services = new();
     private ServiceProvider serviceProvider;
     private IMediator mediator;
 
@@ -26,9 +26,9 @@ public class GetOrderHistoryMediatrTests
     public void OneTimeSetup()
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetOrderHistoryQueryHandler).Assembly));
-        services.AddScoped<IOrderHistoryRepository>(sp => orderHistoryRepositoryMock.Object);
-        services.AddScoped<ILogger<GetOrderHistoryQueryHandler>>(sp => loggerMock.Object);
-        services.AddScoped<ICustomerHttpAccessor>(sp => customerHttpAccessorMock.Object);
+        services.AddScoped(sp => orderHistoryRepositoryMock.Object);
+        services.AddScoped(sp => loggerMock.Object);
+        services.AddScoped(sp => customerHttpAccessorMock.Object);
         services.AddAutoMapper(Assembly.GetAssembly(typeof(GetOrderHistoryMapper)));
 
         serviceProvider = services.BuildServiceProvider();
@@ -49,7 +49,7 @@ public class GetOrderHistoryMediatrTests
         Guid customerId = new("29a75938-ce2d-473b-b7fe-2903fe97fd6e");
         Guid customerAddressId = new("724cbd34-3dff-4e2a-a413-48825f1ab3b9");
 
-        var orderItem1 = new Domain.OrderItem
+        var orderItem1 = new OrderItem
         {
             OrderId = orderId,
             ProductId = new Guid("29a75938-ce2d-473b-b7fe-2903fe97fd6e"),
@@ -59,7 +59,7 @@ public class GetOrderHistoryMediatrTests
             UnitPrice = 9.99m
         };
 
-        var orderItem2 = new Domain.OrderItem
+        var orderItem2 = new OrderItem
         {
             OrderId = orderId,
             ProductId = new Guid("6131ce7e-fb11-4608-a3d3-f01caee2c465"),
@@ -71,7 +71,7 @@ public class GetOrderHistoryMediatrTests
 
         var orderItems = new List<OrderItem>() { orderItem1, orderItem2 };
 
-        var order = new Domain.OrderHistory
+        var order = new OrderHistory
         {
             Id = orderId,
             CustomerId = customerId,
@@ -100,9 +100,12 @@ public class GetOrderHistoryMediatrTests
         var getOrderHistoryRequest = new GetOrderHistoryRequest(orderId);
         var actualResult = await mediator.Send(getOrderHistoryRequest);
 
-        Assert.That(actualResult.OrderHistory.Id, Is.EqualTo(orderId));
-        Assert.That(actualResult.OrderHistory.OrderNumber, Is.EqualTo("000000001"));
-        Assert.That(actualResult.OrderHistory.OrderItems.Count, Is.EqualTo(2));
+        Assert.Multiple(() =>
+        {
+            Assert.That(actualResult.OrderHistory.Id, Is.EqualTo(orderId));
+            Assert.That(actualResult.OrderHistory.OrderNumber, Is.EqualTo("000000001"));
+            Assert.That(actualResult.OrderHistory.OrderItems, Has.Count.EqualTo(2));
+        });
     }
 
     [Test]
@@ -112,8 +115,7 @@ public class GetOrderHistoryMediatrTests
         Guid customerId = new("29a75938-ce2d-473b-b7fe-2903fe97fd6e");
 
         orderHistoryRepositoryMock
-                .Setup(x => x.GetByIdAsync(orderId, customerId))
-                .ReturnsAsync((Domain.OrderHistory)null);
+                .Setup(x => x.GetByIdAsync(orderId, customerId));
 
         var getOrderRequest = new GetOrderHistoryRequest(orderId);
 

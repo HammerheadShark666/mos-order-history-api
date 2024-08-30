@@ -13,9 +13,9 @@ namespace Microservice.Order.History.Api.Endpoints;
 
 public static class Endpoints
 {
-    public static void ConfigureRoutes(this WebApplication app)
+    public static void ConfigureRoutes(this WebApplication webApplication)
     {
-        var orderGroup = app.MapGroup("v{version:apiVersion}/order-history").WithTags("order-history");
+        var orderGroup = webApplication.MapGroup("v{version:apiVersion}/order-history").WithTags("order-history");
 
         orderGroup.MapGet("/{id}", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async ([FromRoute] Guid id, [FromServices] IMediator mediator) =>
         {
@@ -24,8 +24,8 @@ public static class Endpoints
         })
         .Produces<GetOrderHistoryResponse>((int)HttpStatusCode.OK)
         .Produces<BadRequestException>((int)HttpStatusCode.BadRequest)
-        .WithName("GetOrder")
-        .WithApiVersionSet(app.GetApiVersionSet())
+        .WithName("GetOrderHistory")
+        .WithApiVersionSet(webApplication.GetApiVersionSet())
         .MapToApiVersion(new ApiVersion(1, 0))
         .WithOpenApi(x => new OpenApiOperation(x)
         {

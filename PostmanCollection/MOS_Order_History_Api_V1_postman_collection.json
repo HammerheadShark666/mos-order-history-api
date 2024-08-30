@@ -65,7 +65,7 @@
       "name": "Order",
       "item": [
         {
-          "name": "{{order_history_url}}/v1/order-history/{{order_id}}",
+          "name": "{{order_history_url}}/v1/order-history/{{order_id}} (Success)",
           "event": [
             {
               "listen": "test",
@@ -85,16 +85,16 @@
                   "    pm.expect(jsonData.orderHistory.id).to.eql(pm.environment.get(\"order_id\"));\r",
                   "});\r",
                   "\r",
-                  "pm.test('Order number = 0000000001', () => {     \r",
-                  "    pm.expect(jsonData.orderHistory.orderNumber).to.eql('0000000001');\r",
+                  "pm.test('Order number = 0000000006', () => {     \r",
+                  "    pm.expect(jsonData.orderHistory.orderNumber).to.eql('000000006');\r",
                   "});\r",
                   "\r",
                   "pm.test('Items count', () => {     \r",
-                  "    pm.expect(jsonData.orderHistory.orderItems.length).to.eql(2);\r",
+                  "    pm.expect(jsonData.orderHistory.orderItems.length).to.eql(1);\r",
                   "});\r",
                   "\r",
                   "pm.test('Items count', () => {     \r",
-                  "    pm.expect(jsonData.orderHistory.total).to.eql(19.98);\r",
+                  "    pm.expect(jsonData.orderHistory.total).to.eql(8.99);\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -120,6 +120,49 @@
                 "v1",
                 "order-history",
                 "{{order_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "{{order_history_url}}/v1/order-history/{{order_id}} (Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "}); \r",
+                  "\r",
+                  "pm.test('Schema validation', () => {\r",
+                  "    pm.response.to.have.jsonSchema (JSON.parse(pm.environment.get(\"failed_order_history_schema\")));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "https://{{order_history_url}}/v1/order-history/{{failed_order_id}}",
+              "protocol": "https",
+              "host": [
+                "{{order_history_url}}"
+              ],
+              "path": [
+                "v1",
+                "order-history",
+                "{{failed_order_id}}"
               ]
             }
           },

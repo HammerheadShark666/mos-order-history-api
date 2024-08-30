@@ -7,8 +7,6 @@ using System.Text;
 namespace Microservice.Order.History.Api.Helpers;
 public class JwtHelper(IConfiguration configuration) : IJwtHelper
 {
-    private IConfiguration _configuration { get; set; } = configuration;
-
     private const int ExpirationMinutes = 60;
 
     public string GenerateJwtToken()
@@ -37,7 +35,7 @@ public class JwtHelper(IConfiguration configuration) : IJwtHelper
 
     private int GetExpirationMinutes()
     {
-        var expirationMinutes = _configuration["JwtToken:ExpirationMinutes"];
+        var expirationMinutes = configuration["JwtToken:ExpirationMinutes"];
 
         if (expirationMinutes is null)
         {
@@ -49,22 +47,21 @@ public class JwtHelper(IConfiguration configuration) : IJwtHelper
         }
     }
 
-    private SigningCredentials GetSigningCredentials()
+    private static SigningCredentials GetSigningCredentials()
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvironmentVariables.JwtSymmetricSecurityKey));
         return new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
     }
 
-    private List<Claim> GetClaims(DateTime nowUtc, DateTime expirationUtc)
+    private static List<Claim> GetClaims(DateTime nowUtc, DateTime expirationUtc)
     {
-        return new List<Claim>
-                    {
-                        new(JwtRegisteredClaimNames.Sub, "Authentication"),
-                        new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new(JwtRegisteredClaimNames.Iat, EpochTime.GetIntDate(nowUtc).ToString(), ClaimValueTypes.Integer64),
-                        new(JwtRegisteredClaimNames.Exp, EpochTime.GetIntDate(expirationUtc).ToString(), ClaimValueTypes.Integer64),
-                        new(JwtRegisteredClaimNames.Iss, EnvironmentVariables.JwtIssuer),
-                        new(JwtRegisteredClaimNames.Aud, EnvironmentVariables.JwtAudience)
-                    };
+        return [
+                    new(JwtRegisteredClaimNames.Sub, "Authentication"),
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new(JwtRegisteredClaimNames.Iat, EpochTime.GetIntDate(nowUtc).ToString(), ClaimValueTypes.Integer64),
+                    new(JwtRegisteredClaimNames.Exp, EpochTime.GetIntDate(expirationUtc).ToString(), ClaimValueTypes.Integer64),
+                    new(JwtRegisteredClaimNames.Iss, EnvironmentVariables.JwtIssuer),
+                    new(JwtRegisteredClaimNames.Aud, EnvironmentVariables.JwtAudience)
+               ];
     }
 }
