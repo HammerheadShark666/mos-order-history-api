@@ -4,9 +4,12 @@ using Microservice.Order.History.Api.Data.Repository;
 using Microservice.Order.History.Api.Data.Repository.Interfaces;
 using Microservice.Order.History.Api.Helpers;
 using Microservice.Order.History.Api.Helpers.Automapper;
+using Microservice.Order.History.Api.Helpers.Exceptions;
 using Microservice.Order.History.Api.Helpers.Interfaces;
+using Microservice.Order.History.Api.Helpers.Providers;
 using Microservice.Order.History.Api.Helpers.Swagger;
 using Microservice.Order.History.Api.Middleware;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -42,11 +45,22 @@ public static class IServiceCollectionExtensions
         services.AddAutoMapper(Assembly.GetAssembly(typeof(AutoMapperProfile)));
     }
 
-    public static void ConfigureDatabaseContext(this IServiceCollection services, ConfigurationManager configuration)
+    public static void ConfigureSqlServer(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
-        services.AddDbContextFactory<OrderHistoryDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString(Constants.DatabaseConnectionString),
-            options => options.EnableRetryOnFailure()));
+        if (environment.IsProduction())
+        {
+            var connectionString = configuration.GetConnectionString(Constants.AzureDatabaseConnectionString)
+                    ?? throw new DatabaseConnectionStringNotFound("Production database connection string not found.");
+
+            AddDbContextFactory(services, SqlAuthenticationMethod.ActiveDirectoryManagedIdentity, new ProductionAzureSQLProvider(), connectionString);
+        }
+        else if (environment.IsDevelopment())
+        {
+            var connectionString = configuration.GetConnectionString(Constants.LocalDatabaseConnectionString)
+                    ?? throw new DatabaseConnectionStringNotFound("Development database connection string not found.");
+
+            AddDbContextFactory(services, SqlAuthenticationMethod.ActiveDirectoryServicePrincipal, new DevelopmentAzureSQLProvider(), connectionString);
+        }
     }
 
     public static void ConfigureApiVersioning(this IServiceCollection services)
@@ -78,9 +92,18 @@ public static class IServiceCollectionExtensions
 
     public static void ConfigureMediatr(this IServiceCollection services)
     {
-        //services.AddValidatorsFromAssemblyContaining<AddOrderValidator>();
         services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorBehavior<,>));
     }
 
+    private static void AddDbContextFactory(IServiceCollection services, SqlAuthenticationMethod sqlAuthenticationMethod, SqlAuthenticationProvider sqlAuthenticationProvider, string connectionString)
+    {
+        services.AddDbContextFactory<OrderHistoryDbContext>(options =>
+        {
+            SqlAuthenticationProvider.SetProvider(
+                    sqlAuthenticationMethod,
+                    sqlAuthenticationProvider);
+            var sqlConnection = new SqlConnection(connectionString);
+            options.UseSqlServer(sqlConnection);
+        });
+    }
 }
